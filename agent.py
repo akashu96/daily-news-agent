@@ -14,12 +14,12 @@ def get_digest():
     prompt = load_prompt()
     response = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=4000,
+        max_tokens=1000,
         messages=[{"role": "user", "content": prompt}],
         tools=[{
             "type": "web_search_20250305",
             "name": "web_search",
-            "max_uses": 8  # cost safety cap per run
+            "max_uses": 3  # cost safety cap per run
         }],
     )
 
