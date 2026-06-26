@@ -2,5 +2,4 @@ cat > .gitignore << 'EOF'
 .env
 __pycache__/
 *.pyc
-digest_*.md
 EOF
