@@ -1,0 +1,39 @@
+name: Daily News Digest
+
+on:
+  schedule:
+    - cron: '30 1 * * *'   # 1:30 UTC = 7:00 AM IST every day
+  workflow_dispatch: {}     # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write           # needed so the workflow can commit the digest back
+
+jobs:
+  run-digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 agent.py
+
+      - name: Commit digest to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add digest_*.md
+          git diff --staged --quiet || git commit -m "Daily digest: $(date -I)"
+          git push
