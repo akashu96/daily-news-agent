@@ -1,5 +1,3 @@
-cat > .gitignore << 'EOF'
 .env
 __pycache__/
 *.pyc
-EOF
